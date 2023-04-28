@@ -1,14 +1,24 @@
 import json
 import scrapy
+import re
 
 class LinkedCompanySpider(scrapy.Spider):
     name = "linkedin_company_profile"
     api_url = 'https://www.linkedin.com/jobs-guest/jobs/api/seeMoreJobPostings/search?keywords=python&location=United%2BStates&geoId=103644278&trk=public_jobs_jobs-search-bar_search-submit&start=' 
 
     #add your own list of company urls here
+    postfixurl = '?trk=public_jobs_jserp-result_job-search-card-subtitle'
     company_pages = [
-        'https://in.linkedin.com/company/microsoft?trk=public_jobs_jserp-result_job-search-card-subtitle',
-        'https://in.linkedin.com/company/twitter?trk=public_jobs_jserp-result_job-search-card-subtitle'
+        'https://in.linkedin.com/company/microsoft'+postfixurl,
+        'https://in.linkedin.com/company/twitter'+postfixurl,
+        'https://in.linkedin.com/company/google'+postfixurl,
+        'https://in.linkedin.com/company/apple'+postfixurl,
+        'https://in.linkedin.com/company/ibm'+postfixurl,
+        'https://in.linkedin.com/company/amazon-web-services'+postfixurl,
+        'https://in.linkedin.com/company/intel-corporation'+postfixurl,
+        'https://in.linkedin.com/company/att'+postfixurl,
+        'https://in.linkedin.com/company/salesforce'+postfixurl,
+        'https://in.linkedin.com/company/oracle'+postfixurl,
     ]
 
 
@@ -38,21 +48,17 @@ class LinkedCompanySpider(scrapy.Spider):
         try:
             ## all company details 
             company_details = response.css('.core-section-container__content .mb-2')
- 
-            #industry line
-            company_industry_line = company_details[1].css('.text-md::text').getall()
-            company_item['industry'] = company_industry_line[1].strip()
 
-            #company size line
-            company_size_line = company_details[2].css('.text-md::text').getall()
-            company_item['size'] = company_size_line[1].strip()
+            for ele in company_details:
+                
+                info = ele.css('.text-md::text').getall()
+                title = info[0].strip().replace(" ", "")    
+                value = info[1].strip();
 
-            company_headquarter_line = company_details[3].css('.text-md::text').getall()
-            company_item['headquarter'] = company_headquarter_line[1].strip()
-
-            #company founded
-            company_size_line = company_details[5].css('.text-md::text').getall()
-            company_item['founded'] = company_size_line[1].strip()
+                ##if title == "Companysize" :
+                    ##value = re.sub("[^0-9]", "", value);
+  
+                company_item[title] = value;
 
         except IndexError:
             print("Error: Skipped Company - Some details missing")
@@ -79,4 +85,6 @@ class LinkedCompanySpider(scrapy.Spider):
             
         #remove any duplicate links - to prevent spider from shutting down on duplicate
         self.company_pages = list(set(self.company_pages))
-            
+
+    def removeSpace(string):
+        return string.replace(" ", "")        

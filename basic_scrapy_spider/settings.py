@@ -15,7 +15,7 @@ SPIDER_MODULES = ['basic_scrapy_spider.spiders']
 
 NEWSPIDER_MODULE = 'basic_scrapy_spider.spiders'
 
-SCRAPEOPS_API_KEY = '9e43b755-828a-405f-9008-92c59d5b4230'
+SCRAPEOPS_API_KEY = '9207b33f-971f-41c5-bdf5-93cdabdf5d43'
 SCRAPEOPS_PROXY_ENABLED = True
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
